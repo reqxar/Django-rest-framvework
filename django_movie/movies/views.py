@@ -1,7 +1,8 @@
 from django.db import models
 from django_filters import filterset
-from rest_framework import generics
+from rest_framework import generics, permissions
 from django_filters.rest_framework import DjangoFilterBackend
+
 
 from .models import Movie, Actor
 from .serializers import (
