@@ -1,4 +1,5 @@
 from django.db.models import fields
+from django.db.models.expressions import OrderBy
 from rest_framework import serializers
 
 
@@ -25,10 +26,13 @@ class RecursiveSerializer(serializers.ModelSerializer):
 
 class MovieListSerializer(serializers.ModelSerializer):
     '''Список фильмов'''
+    rating_user = serializers.BooleanField()
+    middle_star = serializers.IntegerField()
+
 
     class Meta:
         model = Movie
-        fields = ('title', 'tagline', 'category')
+        fields = ('id', 'title', 'tagline', 'category', 'rating_user', 'middle_star')
 
 
 
@@ -80,7 +84,6 @@ class CreateRatingSerializer(serializers.ModelSerializer):
             movie=validated_data.get('movie', None),
             defaults={'star': validated_data.get("star")}
         )
-
         return rating
 
 
