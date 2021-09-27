@@ -13,7 +13,7 @@ class MovieListView(APIView):
         return Response(serializer.data)
 
 
-class MovieListView(APIView):
+class MovieDetailView(APIView):
     '''Полный вывод фильма'''
 
     def get(self, request, pk):
