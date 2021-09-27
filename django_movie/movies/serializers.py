@@ -5,6 +5,23 @@ from rest_framework import serializers
 from .models import Movie, Review
 
 
+class FilterReviewListSerializer(serializers.ListSerializer):
+    '''Фильтр комментариев, только parents'''
+
+    def to_representation(self, data):
+        data = data.filter(parent=None)
+        return super().to_representation(data)
+
+
+
+class RecursiveSerializer(serializers.ModelSerializer):
+    '''Рекурсивный вовод children'''
+
+    def to_representation(self, value):
+        serializer = self.parent.parent.__class__(value, context=self.context)
+        return serializer.data
+
+
 
 class MovieListSerializer(serializers.ModelSerializer):
     '''Список фильмов'''
@@ -12,7 +29,6 @@ class MovieListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = ('title', 'tagline', 'category')
-
 
 
 
@@ -27,10 +43,12 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     '''Вывод отзыва'''
+    children = RecursiveSerializer(many=True)
 
     class Meta:
+        list_serializer_class = FilterReviewListSerializer
         model = Review
-        fields = ('name', 'text', 'parent')
+        fields = ('name', 'text', 'children')
 
 
 
